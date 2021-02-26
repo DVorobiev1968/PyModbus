@@ -132,6 +132,7 @@ def run_binary_payload_ex():
         # ----------------------------------------------------------------------- #
         address = 0x0
         count = len(payload)
+        print("count payload:{0:d}\n".format(count))
         result = client.read_holding_registers(address, count,  unit=1)
         print("-" * 60)
         print("Registers")
