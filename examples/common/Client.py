@@ -16,10 +16,16 @@ the guard construct that is available in python 2.5 and up::
 # --------------------------------------------------------------------------- #
 # import the various server implementations
 # --------------------------------------------------------------------------- #
+import random
+
+from pymodbus.constants import Endian
+
+from pymodbus.payload import BinaryPayloadBuilder
+
 from pymodbus.client.sync import ModbusTcpClient as ModbusClient
 # from pymodbus.client.sync import ModbusUdpClient as ModbusClient
 # from pymodbus.client.sync import ModbusSerialClient as ModbusClient
-
+import time
 # --------------------------------------------------------------------------- #
 # configure the client logging
 # --------------------------------------------------------------------------- #
@@ -30,8 +36,50 @@ logging.basicConfig(format=FORMAT)
 log = logging.getLogger()
 log.setLevel(logging.DEBUG)
 
-UNIT = 0x1
+UNIT = 0x0
 
+def run_client_2():
+    client = ModbusClient('localhost', port=5020)
+    client.connect()
+    log.debug("Read Write 32 and 64 bit value to holding registers")
+    builder = BinaryPayloadBuilder(byteorder=Endian.Little,
+                                   wordorder=Endian.Little)
+    for i in range (0,9):
+        real_value = random.randint(1, 100) / 3
+        builder.add_64bit_float(real_value)
+        payload = builder.to_registers()
+        payload = builder.build()
+        rq = client.write_registers(i, payload, skip_encode=True, unit=UNIT)
+        if not rq.isError():
+            time.sleep(1)
+            builder.reset()
+        else:
+            log.error("Error write_registers:")
+            break
+    client.close()
+
+def run_client_1():
+    client = ModbusClient('localhost', port=5020)
+    client.connect()
+    log.debug("Read Write to multiple holding registers")
+    for i in range (1,20):
+        log.debug("Write to multiple holding registers and read back")
+        real_value=i
+        rq = client.write_register(i, real_value, unit=UNIT)
+        assert (not rq.isError())       # test that we are not an error
+        time.sleep(1)
+    client.close()
+
+def run_client():
+    client = ModbusClient('localhost', port=5020)
+    client.connect()
+    log.debug("Read to multiple holding registers")
+    for i in range (1,20):
+        rr = client.read_holding_registers(1, 10, unit=UNIT)
+        for j in range (1,10): print("{0:f};".format(rr.registers[j]))
+        print("\n")
+        time.sleep(1)
+    client.close()
 
 def run_sync_client():
     client = ModbusClient('localhost', port=5020)
@@ -109,4 +157,6 @@ def run_sync_client():
 
 
 if __name__ == "__main__":
-    run_sync_client()
+    # run_sync_client()
+
+    run_client_2()

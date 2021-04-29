@@ -7,6 +7,7 @@ with read/write data as well as user configurable base data
 import pickle
 from optparse import OptionParser
 from twisted.internet import reactor
+import logging
 
 from pymodbus.server.asynchronous import StartTcpServer
 from pymodbus.datastore import ModbusServerContext,ModbusSlaveContext
@@ -78,7 +79,7 @@ class Configuration:
         try:
             self.file = open(config, "rb")
         except Exception as e:
-            _logger.critical(str(e))
+            logging.critical(str(e))
             raise ConfigurationException("File not found %s" % config)
 
     def parse(self):

@@ -241,7 +241,7 @@ def get_options():
 
     parser.add_option("-d", "--debug",
         help="Enable debug tracing",
-        action="store_true", dest="debug", default=False)
+        action="store_true", dest="debug", default=True)
 
     (opt, arg) = parser.parse_args()
     return opt

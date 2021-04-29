@@ -5,9 +5,9 @@
 # the given arguments. What follows is the listing of messages
 # that are encoded in each format:
 #
-# - ReadHoldingRegistersResponse
-# - ReadDiscreteInputsResponse
-# - ReadInputRegistersResponse
+# - ReadHoldingRegistersResponse 0x3
+# - ReadDiscreteInputsResponse 0x02
+# - ReadInputRegistersResponse 0x04
 # - ReadCoilsResponse
 # - WriteMultipleCoilsResponse
 # - WriteMultipleRegistersResponse
@@ -49,7 +49,8 @@
 #
 # ./message-parser -b -p tcp -f messages
 # ------------------------------------------------------------
-#00010000001301031000010001000100010001000100010001
+#0001 0000 0013 01 03 10 000A 0010 0008 0007 0006 0005 0004 0001
+#0001000200130A0310FFFF000A001000080007000600050001
 #000100000004010201ff
 #00010000001301041000010001000100010001000100010001
 #000100000004010101ff
@@ -178,7 +179,8 @@
 #
 # ./message-parser -b -p binary -f messages
 # ------------------------------------------------------------
-#7b0103100001000100010001000100010001000193b47d
+#7b 01 03 10 0001 0001 0001 0001 0001 0001 0001 000193b4 7d
+7b0103100001000100010001000100010001000193b47d
 #7b010201ffe1c87d
 #7b0104100001000100010001000100010001000122c17d
 #7b010101ff11c87d

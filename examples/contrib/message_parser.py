@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """
 Modbus Message Parser
 --------------------------------------------------------------------------
@@ -16,17 +16,27 @@ using the supplied framers for a number of protocols:
 # -------------------------------------------------------------------------- #
 from __future__ import print_function
 import collections
+import os
+import sys
 import textwrap
 from optparse import OptionParser
 import codecs as c
 
+from examples.contrib.message_generator import modbus_log
 from pymodbus.factory import ClientDecoder, ServerDecoder
 from pymodbus.transaction import ModbusSocketFramer
 from pymodbus.transaction import ModbusBinaryFramer
 from pymodbus.transaction import ModbusAsciiFramer
 from pymodbus.transaction import ModbusRtuFramer
 from pymodbus.compat import  IS_PYTHON3
-# -------------------------------------------------------------------------- #
+# настроим пути в проекте #
+parent_dir = os.path.abspath(os.pardir)
+# examples = os.path.join(parent_dir, "examples")
+example_contrib = os.path.join(parent_dir, "examples/contrib")
+sys.path.insert(0, os.path.abspath(os.pardir))
+sys.path.append(example_contrib)
+module = sys.argv[0].split('/')[-1].split('.')[0]
+sys_info = "Starting {0} from Python:{1}.{2}".format(module, sys.version_info.major, sys.version_info.minor)
 # -------------------------------------------------------------------------- #
 import logging
 FORMAT = ('%(asctime)-15s %(threadName)-15s'
@@ -127,7 +137,7 @@ def get_options():
 
     parser.add_option("-D", "--debug",
                       help="Enable debug tracing",
-                      action="store_true", dest="debug", default=False)
+                      action="store_true", dest="debug", default=True)
 
     parser.add_option("-m", "--message",
                       help="The message to parse",
@@ -191,6 +201,7 @@ def get_messages(option):
 def main():
     """ The main runner function
     """
+    # log.info(sys_info)
     option = get_options()
 
     if option.debug:
